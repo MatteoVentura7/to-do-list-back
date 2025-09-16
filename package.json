@@ -1,0 +1,16 @@
+{
+  "name": "to-do-app-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+     "start": "node app.js",
+    "watch": "node --watch app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
