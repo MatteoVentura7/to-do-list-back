@@ -1,6 +1,6 @@
 const express = require("express");
-const validationIdParam = require("../middlewares/validationIdParam");
-const taskController = require("../controllers/taskController");
+const validationIdParam = require("../middlewares/validationIdParams.js");
+const taskController = require("../controllers/taskControllers.js");
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.use("/:id", validationIdParam);
 router.get("/", taskController.index);
 
 // Create
-router.post("/", taskController.store);
+router.post("/", taskController.create);
 
 // Update
 router.put("/:id", taskController.update);

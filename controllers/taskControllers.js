@@ -1,4 +1,7 @@
 
+// Import dei dati
+const tasksData = require("../data/tasksData");
+
 // Index
 const index = (req, res) => {
   let tasksFiltered = tasksData;
@@ -12,9 +15,23 @@ const index = (req, res) => {
 
   res.json(tasksFiltered);
 };
+
+
 // Create
-
-
+const create = (req, res) => {
+  const { texts, completed = false } = req.body;
+  if (!texts) {
+    return res.status(400).json({ error: "Il campo 'texts' è obbligatorio" });
+  }
+  const newId = tasksData.length > 0 ? Math.max(...tasksData.map(t => t.id)) + 1 : 1;
+  const newTask = {
+    id: newId,
+    texts,
+    completed,
+  };
+  tasksData.push(newTask);
+  res.status(201).json(newTask);
+};
 
 // Update
 
@@ -49,5 +66,5 @@ const destroy = (req, res) => {
 
 
 
-module.exports = { index, destroy , update };
+module.exports = { index, create, destroy, update };
 

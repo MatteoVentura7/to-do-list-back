@@ -5,6 +5,11 @@ const port = 3000;
 app.use(express.static("public"));
 app.use(express.json());
 
+
+// Importa il router dei task
+const tasksRouter = require("./routers/tasksRouter");
+app.use("/tasks", tasksRouter);
+
 // Definisci una rotta per la homepage
 app.get("/", (req, res) => {
   res.send("Benvenuto nella tua prima applicazione Express!");
