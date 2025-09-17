@@ -1,17 +1,7 @@
 [
   {
-    "id": 1,
-    "texts": "task1",
-    "completed": false
-  },
-  {
-    "id": 2,
-    "texts": "task2",
-    "completed": true
-  },
-  {
-    "id": 3,
-    "texts": "task3",
+    "id": 5,
+    "texts": "dd2d2d2",
     "completed": false
   }
 ]

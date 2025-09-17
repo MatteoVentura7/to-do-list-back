@@ -14,7 +14,7 @@ app.use("/tasks", tasksRouter);
 app.use(cors());
 // Definisci una rotta per la homepage
 app.get("/", (req, res) => {
-  res.send("Benvenuto nella tua prima applicazione Express!");
+  res.send("Benvenuto !");
 });
 
 // Avvia il server
