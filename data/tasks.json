@@ -1,17 +1,17 @@
 [
   {
     "id": 1,
-    "texts": "compra il pane",
+    "texts": "task1",
     "completed": false
   },
   {
     "id": 2,
-    "texts": "compra le uova",
-    "completed": false
+    "texts": "task2",
+    "completed": true
   },
   {
     "id": 3,
-    "texts": "compra il latte",
+    "texts": "task3",
     "completed": false
   }
 ]

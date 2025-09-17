@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+const cors = require('cors');
 app.use(express.static("public"));
 app.use(express.json());
 
@@ -10,6 +11,7 @@ app.use(express.json());
 const tasksRouter = require("./routers/tasksRouter");
 app.use("/tasks", tasksRouter);
 
+app.use(cors());
 // Definisci una rotta per la homepage
 app.get("/", (req, res) => {
   res.send("Benvenuto nella tua prima applicazione Express!");
