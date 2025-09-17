@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "texts": "compra il pane",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "texts": "compra le uova",
+    "completed": false
+  },
+  {
+    "id": 3,
+    "texts": "compra il latte",
+    "completed": false
+  }
+]
