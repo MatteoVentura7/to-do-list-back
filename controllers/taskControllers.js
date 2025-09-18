@@ -1,7 +1,11 @@
 
+const connection = require("../db");
+
 const fs = require("fs");
 const path = require("path");
 const tasksFilePath = path.join(__dirname, "../data/tasks.json");
+
+
 
 function readTasks() {
   try {
@@ -17,18 +21,29 @@ function writeTasks(tasks) {
 }
 
 // Index
+
 const index = (req, res) => {
-  let tasksFiltered = readTasks();
-  const { text } = req.query;
+  const sql = `SELECT * FROM tab1.text`;
 
-  if (text) {
-    tasksFiltered = tasksFiltered.filter((task) =>
-      task.texts.includes(text)
-    );
-  }
-
-  res.json(tasksFiltered);
+  connection.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+    res.json(results);
+  });
 };
+
+// Index
+// const index = (req, res) => {
+//   let tasksFiltered = readTasks();
+//   const { text } = req.query;
+
+//   if (text) {
+//     tasksFiltered = tasksFiltered.filter((task) =>
+//       task.texts.includes(text)
+//     );
+//   }
+
+//   res.json(tasksFiltered);
+// };
 
 
 // Create
