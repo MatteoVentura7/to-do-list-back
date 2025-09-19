@@ -1,4 +1,5 @@
 const express = require('express')
+const { toggleTaskCompletion } = require("../controllers/taskControllers");
 
 const router = express.Router()
 
@@ -21,5 +22,10 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     res.send(`Eliminazione della task ${req.params.id}`)
 })
+
+// Toggle completion
+router.patch('/:id/completed', (req, res) => {
+    toggleTaskCompletion(req, res);
+});
 
 module.exports = router

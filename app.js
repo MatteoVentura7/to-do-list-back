@@ -1,23 +1,36 @@
 const express = require("express");
-const app = express();
-const port = 3000;
+const db = require("./db.js");
+const cors = require("cors");
 
-const cors = require('cors');
-app.use(express.static("public"));
+const app = express();
+const PORT = 3000;
+
+// Usa il middleware CORS
+app.use(cors());
+
+// Importazione midddleware
+
+const validationIdParam = require("./middlewares/validationIdParams.js");
+// ROUTER
+const employersRouter = require("./routers/employersRouter");
+const taskRouter = require("./routers/tasksRouter");
+
+// Middleware per il parsing del body in formato JSON
 app.use(express.json());
 
-
-// Importa il router dei task
-const tasksRouter = require("./routers/tasksRouter");
-app.use("/tasks", tasksRouter);
-
-app.use(cors());
-// Definisci una rotta per la homepage
 app.get("/", (req, res) => {
-  res.send("Benvenuto !");
+  res.send("Server del mio Blog");
 });
 
+// Registro le rotte
+
+app.use("/tasks", taskRouter);
+app.use("/employers", employersRouter);
+
+// middleware che gestisce gli errori 404
+app.use(validationIdParam);
+
 // Avvia il server
-app.listen(port, () => {
-  console.log(`Server in ascolto su http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server in esecuzione su http://localhost:${PORT}`);
 });

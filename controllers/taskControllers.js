@@ -1,96 +1,96 @@
-
 const connection = require("../db");
 
-const fs = require("fs");
-const path = require("path");
-const tasksFilePath = path.join(__dirname, "../data/tasks.json");
-
-
-
-function readTasks() {
-  try {
-    const data = fs.readFileSync(tasksFilePath, "utf8");
-    return JSON.parse(data);
-  } catch (err) {
-    return [];
-  }
-}
-
-function writeTasks(tasks) {
-  fs.writeFileSync(tasksFilePath, JSON.stringify(tasks, null, 2));
-}
-
-// Index
-
-const index = (req, res) => {
-  const sql = `SELECT * FROM tab1.text`;
-
-  connection.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: "Database query failed" });
+// Funzione per ottenere tutte le task
+const getAllTasks = (req, res) => {
+  const query = "SELECT * FROM tasks";
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Errore nel server");
+    }
     res.json(results);
   });
 };
 
-// Index
-// const index = (req, res) => {
-//   let tasksFiltered = readTasks();
-//   const { text } = req.query;
-
-//   if (text) {
-//     tasksFiltered = tasksFiltered.filter((task) =>
-//       task.texts.includes(text)
-//     );
-//   }
-
-//   res.json(tasksFiltered);
-// };
-
-
-// Create
-const create = (req, res) => {
-  const { texts, completed = false } = req.body;
-  if (!texts) {
-    return res.status(400).json({ error: "Il campo 'texts' è obbligatorio" });
-  }
-  const tasks = readTasks();
-  const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
-  const newTask = {
-    id: newId,
-    texts,
-    completed,
-  };
-  tasks.push(newTask);
-  writeTasks(tasks);
-  res.status(201).json(newTask);
+// Funzione per aggiungere una nuova task
+const createTask = (req, res) => {
+  const { texts } = req.body;
+  const query = "INSERT INTO tasks (texts) VALUES (?)";
+  connection.query(query, [texts], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Errore nel server" });
+    }
+    res
+      .status(201)
+      .json({ message: "Task aggiunta con successo", taskId: result.insertId });
+  });
 };
 
-// Update
-
-const update = (req, res) => {
-  const tasks = readTasks();
-  const task = tasks.find((elm) => elm.id == req.params.id);
-  if (!task) {
-    return res.status(404).json({ error: "task not found" });
-  }
-  if (req.body.texts !== undefined) task.texts = req.body.texts;
-  if (req.body.completed !== undefined) task.completed = req.body.completed;
-  writeTasks(tasks);
-  res.json(task);
+// Funzione per aggiornare una task
+const updateTask = (req, res) => {
+  const { id } = req.params;
+  const { texts } = req.body;
+  const query = "UPDATE tasks SET texts = ?  WHERE id = ?";
+  connection.query(query, [texts, id], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Errore nel server" });
+    }
+    res
+      .status(201)
+      .json({ message: "Task aggiornata con successo", texts: texts });
+  });
 };
 
-// Delete
-const destroy = (req, res) => {
-  const tasks = readTasks();
-  const taskIndex = tasks.findIndex((elm) => elm.id == req.params.id);
-  if (taskIndex === -1) {
-    return res.status(404).json({ error: "task not found" });
-  }
-  tasks.splice(taskIndex, 1);
-  writeTasks(tasks);
-  res.sendStatus(204);
+// Funzione per eliminare una task
+const deleteTask = (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE FROM tasks WHERE id = ?";
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Errore nel server");
+    }
+    res.send("Task eliminata con successo");
+  });
 };
 
+// Funzione per aggiornare lo stato di completamento di una task
+const toggleTaskCompletion = (req, res) => {
+  const { id } = req.params;
+  const query = "UPDATE tasks SET completed = NOT completed WHERE id = ?";
+  connection.query(query, [id], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Errore nel server" });
+    }
 
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Task non trovata" });
+    }
 
-module.exports = { index, create, destroy, update };
+    // Recupera il nuovo stato della task
+    const fetchQuery = "SELECT id, completed FROM tasks WHERE id = ?";
+    connection.query(fetchQuery, [id], (fetchErr, fetchResults) => {
+      if (fetchErr) {
+        console.error(fetchErr);
+        return res.status(500).json({ error: "Errore nel server" });
+      }
 
+      res.json({
+        message: "Stato di completamento aggiornato con successo",
+        task: fetchResults[0],
+      });
+    });
+  });
+};
+
+// Esporta le funzioni
+module.exports = {
+  getAllTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  toggleTaskCompletion, // Esporta la nuova funzione
+};

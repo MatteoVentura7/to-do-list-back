@@ -1,30 +1,19 @@
 const express = require("express");
-const validationIdParam = require("../middlewares/validationIdParams.js");
-const taskController = require("../controllers/taskControllers.js");
+const {
+  getAllTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  toggleTaskCompletion,
+} = require("../controllers/taskControllers");
 
 const router = express.Router();
 
-const cors = require("cors");
-
-router.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
-);
-
-// Middleware per verificare il parametro ID delle rotte
-router.use("/:id", validationIdParam);
-
-// Index
-router.get("/", taskController.index);
-
-// Create
-router.post("/", taskController.create);
-
-// Update
-router.put("/:id", taskController.update);
-
-// Delete
-router.delete("/:id", taskController.destroy);
+// Definizione delle rotte
+router.get("/", getAllTasks); // Ottieni tutte le task
+router.post("/", createTask); // Crea una nuova task
+router.put("/:id", updateTask); // Aggiorna una task
+router.delete("/:id", deleteTask); // Elimina una task
+router.patch("/:id/completed", toggleTaskCompletion); // Cambia lo stato di completamento di una task
 
 module.exports = router;
