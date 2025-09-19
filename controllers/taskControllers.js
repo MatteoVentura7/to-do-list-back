@@ -57,31 +57,24 @@ const deleteTask = (req, res) => {
 };
 
 // Funzione per aggiornare lo stato di completamento di una task
-const toggleTaskCompletion = (req, res) => {
+const updateTaskCompletion = (req, res) => {
   const { id } = req.params;
-  const query = "UPDATE tasks SET completed = NOT completed WHERE id = ?";
-  connection.query(query, [id], (err, result) => {
+  const { completed } = req.body;
+  const { texts } = req.body;
+
+  const query = "UPDATE tasks SET completed = ? WHERE id = ?";
+  connection.query(query, [completed, id], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Errore nel server" });
     }
-
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Task non trovata" });
     }
-
-    // Recupera il nuovo stato della task
-    const fetchQuery = "SELECT id, completed FROM tasks WHERE id = ?";
-    connection.query(fetchQuery, [id], (fetchErr, fetchResults) => {
-      if (fetchErr) {
-        console.error(fetchErr);
-        return res.status(500).json({ error: "Errore nel server" });
-      }
-
-      res.json({
-        message: "Stato di completamento aggiornato con successo",
-        task: fetchResults[0],
-      });
+    res.json({
+      message: "Stato di completamento aggiornato con successo",
+      completed,
+      texts: texts,
     });
   });
 };
@@ -92,5 +85,5 @@ module.exports = {
   createTask,
   updateTask,
   deleteTask,
-  toggleTaskCompletion, // Esporta la nuova funzione
+  updateTaskCompletion, // Esporta la nuova funzione
 };

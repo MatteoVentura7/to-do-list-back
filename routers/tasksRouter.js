@@ -5,6 +5,7 @@ const {
   updateTask,
   deleteTask,
   toggleTaskCompletion,
+  updateTaskCompletion,
 } = require("../controllers/taskControllers");
 
 const router = express.Router();
@@ -13,7 +14,7 @@ const router = express.Router();
 router.get("/", getAllTasks); // Ottieni tutte le task
 router.post("/", createTask); // Crea una nuova task
 router.put("/:id", updateTask); // Aggiorna una task
+router.put("/:id/completed", updateTaskCompletion); // Aggiorna lo stato di completamento di una task
 router.delete("/:id", deleteTask); // Elimina una task
-router.patch("/:id/completed", toggleTaskCompletion); // Cambia lo stato di completamento di una task
 
 module.exports = router;
