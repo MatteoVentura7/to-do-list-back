@@ -15,6 +15,8 @@ const getAllTasks = (req, res) => {
 // Funzione per aggiungere una nuova task
 const createTask = (req, res) => {
   const { texts } = req.body;
+  
+    const completed = false;
   const query = "INSERT INTO tasks (texts) VALUES (?)";
   connection.query(query, [texts], (err, result) => {
     if (err) {
@@ -23,7 +25,7 @@ const createTask = (req, res) => {
     }
     res
       .status(201)
-      .json({ message: "Task aggiunta con successo", taskId: result.insertId });
+      .json({ message: "Task aggiunta con successo", id: result.insertId, texts,completed });
   });
 };
 
@@ -39,7 +41,7 @@ const updateTask = (req, res) => {
     }
     res
       .status(201)
-      .json({ message: "Task aggiornata con successo", texts: texts });
+      .json({ message: "Task aggiornata con successo", texts: texts , id: id});
   });
 };
 
@@ -59,8 +61,8 @@ const deleteTask = (req, res) => {
 // Funzione per aggiornare lo stato di completamento di una task
 const updateTaskCompletion = (req, res) => {
   const { id } = req.params;
-  const { completed } = req.body;
-  const { texts } = req.body;
+  const { completed, texts } = req.body;
+  const { taskId } = req.body;
 
   const query = "UPDATE tasks SET completed = ? WHERE id = ?";
   connection.query(query, [completed, id], (err, result) => {
@@ -73,8 +75,11 @@ const updateTaskCompletion = (req, res) => {
     }
     res.json({
       message: "Stato di completamento aggiornato con successo",
+       taskId,
+      id,
+      texts,
       completed,
-      texts: texts,
+      
     });
   });
 };
@@ -85,5 +90,5 @@ module.exports = {
   createTask,
   updateTask,
   deleteTask,
-  updateTaskCompletion, // Esporta la nuova funzione
+  updateTaskCompletion, 
 };
